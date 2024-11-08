@@ -77,7 +77,6 @@
             <button class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-[#d10000] hover:text-white hover:border-[#d10000]">삭제</button>
           </div>
         </div>
-
         <!-- 댓글 작성 -->
         <div class="ml-30 justify-center items-center w-full">
           <div class="flex items-center">
@@ -93,7 +92,6 @@
             </div>
           </div>
         </div>
-
         <!-- 댓글 목록 -->
         <!-- <div class="mt-5">
           <ul>
