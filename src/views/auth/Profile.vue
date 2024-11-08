@@ -17,6 +17,7 @@
               </div>
             </div>
           </div>
+
           <!-- 닉네임 -->
           <div class="grid grid-cols-4 items-center gap-x-4">
             <label class="text-gray-700 text-lg font-semibold">닉네임 <span class="text-red-500">*</span></label>
@@ -114,8 +115,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
-import { useUserStore } from '@/store/user';
+import { ref, watchEffect, onBeforeUnmount, computed } from 'vue';
+import { useUserStore } from '@/store/userStore';
 import { userProfile, loginUsers, deleteUser } from '@/api/loginApi'; // registerUser 추가
 import { useRouter } from 'vue-router';
 import { getPositions, getTechstacks } from '@/api/projectApi';
@@ -128,6 +129,7 @@ const formData = ref({ nickname: '', affiliation: '', location: '' }); // formDa
 const profileImage = ref(null); // 프로필 이미지 상태 관리
 const isUserDataExists = ref(false);
 const isSubmitted = ref(false); // 완료 버튼 클릭 여부를 추적
+const fileInput = ref(null);
 
 //사용자 데이터 가져오기
 const checkUserData = async () => {
@@ -136,10 +138,11 @@ const checkUserData = async () => {
     if (userData.result.nickname) {
       isUserDataExists.value = true;
       useStore.login(userData.result); // 스토어에 사용자 정보 저장
-      formData.value = userData.result; // 사용자 정보를 formData에 할당
+      console.log(`되냐 ${formData.value}`);
     } else {
       isUserDataExists.value = false; // 닉네임이 없는 경우
     }
+    formData.value = userData.result; // 사용자 정보를 formData에 할당
   } catch (error) {
     console.error('사용자 데이터 확인 실패:', error);
   }
@@ -148,6 +151,7 @@ const checkUserData = async () => {
 const handleSubmit = async () => {
   try {
     if (formData.value.nickname) {
+  
       isSubmitted.value = true; // 완료 버튼이 클릭되었음을 표시
 
       // 업데이트 요청
@@ -177,6 +181,7 @@ const onFileChange = (event) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       profileImage.value = e.target.result; // 이미지 미리보기
+      // fileInput.value = profileImage.value;
     };
     reader.readAsDataURL(file);
   } else {
@@ -320,7 +325,7 @@ const handleClickOutside = (event) => {
   }
 };
 
-onMounted(() => {
+watchEffect(() => {
   checkUserData();
   updateTechstacks();
   updatePositions();

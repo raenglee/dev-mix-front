@@ -118,7 +118,7 @@
   
   <script setup>
   import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
-  import { useUserStore } from '@/store/user';
+  import { useUserStore } from '@/store/userStore';
   import { userProfile, loginUsers, deleteUser } from '@/api/loginApi'; // registerUser 추가
   import { useRouter } from 'vue-router';
   import { getPositions, getTechstacks } from '@/api/projectApi';

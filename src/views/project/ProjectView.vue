@@ -26,7 +26,7 @@
               <p class="font-bold pr-2 text-lg">진행 기간</p>
               <p class="py-2 pl-2">{{ projectPeriod }}</p>
             </div>
-            <!-- <div class="items-center">
+            <div class="items-center">
               <p class="font-bold pr-2 text-lg">기술 / 언어</p>
               <div class="flex items-center">
                 <div class="py-2 space-x-3" v-for="tech in techStacks" :key="tech">
@@ -34,31 +34,26 @@
                   <span class="text-sm py-4">{{ tech.techStackName }}</span>
                 </div>
               </div>
-            </div> -->
+              <!-- 기술 스택을 문자열로 표시 -->
+            </div>
           </div>
           <div class="col-span-2 pl-0">
             <p class="font-bold pr-2 text-lg">모집 마감일</p>
-            <p class="py-2 pl-2">{{ endDate }}</p>
+            <p class="py-2 pl-2">{{ recruitEndDate }}</p>
           </div>
-          <div class="space-y-4 col-span-4 pl-20 flex flex-col">
+          <div class="space-y-4 col-span-4 pl-20">
             <p class="font-bold pr-2 text-lg">모집 현황</p>
-            <!-- flex-col로 세로 방향으로 배치 -->
-            <div class="flex flex-col w-full space-y-4">
-              <div v-for="(position, index) in positions" :key="index" class="flex items-center justify-between">
-                <p>{{ position.positionName }}</p>
-                <p class="m-auto">{{ position.currentCount }}/{{ position.requiredCount }}</p>
-                <button class="item-center border flex-shrink-0 border-gray-200 rounded-full min-w-14 h-7 pl-2 pr-2 m-auto hover:bg-gray-200">지원</button>
-              </div>
-            </div>
-          </div>
-          <div class="flex flex-col items-center">
-            <p class="font-bold text-lg w-full items-center text-center">기술 / 언어</p>
-            <div class="flex items-center w-full">
-              <div class="py-2 space-x-5" v-for="tech in techStacks" :key="tech">
-                <img :src="tech.imageUrl" class="w-10 h-10" />
-                <span class="text-sm">{{ tech.techStackName }}</span>
-              </div>
-            </div>
+            <!-- <div v-for="(position, index) in project.positionDtoList" :key="index" class="flex items-center space-x-10">
+              <p class="pl-1">포지션이름</p>
+              <p class="p1-5">사람수</p> 
+              <p class="p1-5">/</p>
+              <p>ㅏ람수?</p>
+              <button v-if="!position.applied && position.currentCount < position.requiredCount" @click="applyForPosition(index)" class="border border-gray-200 rounded-full pl-2 pr-2 text-base hover:bg-gray-200">
+                지원
+              </button>
+              <p v-else-if="position.applied" class="text-gray-500">승인 대기중</p>
+              <p v-else class="text-red-500">마감</p> -->
+            <!-- </div> -->
           </div>
         </div>
 
@@ -72,7 +67,7 @@
         </div>
         <div class="flex justify-between mb-3 mx-7">
           <RouterLink to="/"><button class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-gray-200" @click="goToList">목록</button></RouterLink>
-          <div v-if="isAuthor" class="space-x-3">
+          <div class="space-x-3">
             <button class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-[#d10000] hover:text-white hover:border-[#d10000]">수정</button>
             <button class="border border-gray-200 rounded-full px-4 py-1 text-sm hover:bg-[#d10000] hover:text-white hover:border-[#d10000]">삭제</button>
           </div>
@@ -116,20 +111,19 @@
 
 <script setup>
 import { getProjectView } from '@/api/projectApi';
-import { computed, ref, watchEffect } from 'vue';
+import { ref, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
 
 const title = ref('');
 const location = ref('');
-const endDate = ref('');
+const recruitEndDate = ref('');
 const content = ref('');
 const projectPeriod = ref('');
 const viewCount = ref('');
 const nickname = ref('');
 const techStacks = ref([]);
-const positions = ref([]);
 
 watchEffect(async () => {
   const res = await getProjectView(route.params.board_id);
@@ -138,22 +132,20 @@ watchEffect(async () => {
     title.value = res.data.result.title;
     content.value = res.data.result.content;
     location.value = res.data.result.location;
-    endDate.value = res.data.result.endDate;
+    recruitEndDate.value = res.data.result.recruitEndDate;
     projectPeriod.value = res.data.result.projectPeriod;
     viewCount.value = res.data.result.viewCount;
     nickname.value = res.data.result.nickname;
     techStacks.value = res.data.result.techStackDtoList;
-    positions.value = res.data.result.positionDtoList;
-    // console.log('기술스택확인', res.data.result.techStackDtoList);
-    // console.log('포지션 배열 확인', res.data.result.positionDtoList);
+    console.log(res.data.result.techStackDtoList);
   } else {
     alert('데이터연결안됨', res.response.data.message);
   }
 });
 
-
-// const isAuthor = computed( () = > )
-
+// const goToList = () => {
+//   this.router.push('/');
+// }
 </script>
 
 <style lang="scss" scoped></style>

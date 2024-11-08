@@ -14,7 +14,7 @@
             <RouterLink to="/projectcreate">
               <font-awesome-icon icon="pen" class="h-6 w-5 cursor-pointer p-2 text-white hover:bg-[#ffffff] hover:text-[#d10000]" />
             </RouterLink>
-            <div class="relative" @mouseenter="openDropdown" @mouseleave="closeDropdown">
+            <div class="relative">
               <font-awesome-icon
                 icon="user"
                 class="h-6 w-5 cursor-pointer p-2"
@@ -22,6 +22,9 @@
                   'text-[#d10000] bg-white': isPeopleDropdownOpen,
                   'text-white hover:bg-[#ffffff] hover:text-[#d10000]': !isPeopleDropdownOpen
                 }"
+                @click="toggleDropdown"
+                @mouseover="openDropdown"
+                @mouseleave="closeDropdown"
               />
 
               <!-- 드롭다운 메뉴 -->
@@ -31,10 +34,10 @@
                     <p class="px-4 py-2 font-bold text-lg">반갑습니다 {{ useStore.nickname }} 님!</p>
                   </li>
                   <li>
-                    <RouterLink to="/mypage" class="block px-4 py-2 text-gray-800 hover:bg-[#d1000020]"> 마이 페이지 </RouterLink>
+                    <RouterLink to="/mypage" class="block px-4 py-2 text-gray-800 hover:bg-[#d1000020]" @click="toggleDropdown"> 마이 페이지 </RouterLink>
                   </li>
                   <li>
-                    <RouterLink to="/projectmanagement/myproject" class="block px-4 py-2 text-gray-800 hover:bg-[#d1000020]"> 프로젝트 관리 </RouterLink>
+                    <RouterLink to="/projectmanagement/myproject" class="block px-4 py-2 text-gray-800 hover:bg-[#d1000020]" @click="toggleDropdown"> 프로젝트 관리 </RouterLink>
                   </li>
                   <li>
                     <button @click="logout" class="block w-full px-4 py-2 text-gray-800 hover:bg-[#d1000020] text-left">로그아웃</button>
@@ -50,8 +53,7 @@
           <div class="flex space-x-5">
             <button class="focus:outline-none" @click.stop="modalLogin('login')">
               <!-- <img src="/img/person.png" class="h-6 w-5" /> -->
-              <!-- <font-awesome-icon icon="user" class="h-6 w-5 cursor-pointer text-white" /> -->
-              <font-awesome-icon icon="user" class="h-6 w-5 cursor-pointer p-2 text-white hover:bg-[#ffffff] hover:text-[#d10000]" />
+              <font-awesome-icon icon="user" class="h-6 w-5 cursor-pointer text-white" />
             </button>
           </div>
         </template>
@@ -87,9 +89,9 @@
 
 <!--스크립트-->
 <script setup>
-import { onMounted, onUnmounted, ref, watchEffect } from 'vue';
+import { ref, watchEffect, onMounted, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useUserStore } from '@/store/user';
+import { useUserStore } from '@/store/userStore';
 import { RouterLink } from 'vue-router';
 import { loginUsers } from '@/api/loginApi';
 
@@ -155,14 +157,28 @@ watchEffect(async () => {
 // 드롭다운 상태 관리
 const isPeopleDropdownOpen = ref(false);
 
-// 드롭다운 열기
+// 드롭다운 토글 함수 (이미지 클릭 시)
+const toggleDropdown = () => {
+  isPeopleDropdownOpen.value = !isPeopleDropdownOpen.value;
+};
+
+// 외부 클릭 시 드롭다운 닫기
+const handleClickOutside = (event) => {
+  if (!event.target.closest('.relative')) {
+    isPeopleDropdownOpen.value = ''; // 모든 드롭다운 닫기
+  }
+};
+
+// 호버 시 드롭다운을 열기
 const openDropdown = () => {
   isPeopleDropdownOpen.value = true;
 };
 
-// 드롭다운 닫기
+// 호버를 벗어나면 드롭다운을 닫기
 const closeDropdown = () => {
-  isPeopleDropdownOpen.value = false;
+  if (!isPeopleDropdownOpen.value) {  // 클릭으로 열린 상태라면, 닫히지 않도록 방지
+    isPeopleDropdownOpen.value = false;
+  }
 };
 
 // 로그아웃 함수
@@ -171,12 +187,6 @@ const logout = () => {
   useStore.logout();
   alert('로그아웃 성공');
   router.push('/');
-};
-
-const handleClickOutside = (event) => {
-  if (!event.target.closest('.relative')) {
-    isPeopleDropdownOpen.value = false;
-  }
 };
 
 onMounted(() => {

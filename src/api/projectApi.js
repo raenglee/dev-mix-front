@@ -6,7 +6,7 @@ const url = 'http://localhost:8080/api/v1/boards';
 // const url = `${GLOBAL_URL}/api/v1/boards`;
 
 export const getProjectView = async (board_id) => {
-  // console.log('게시판 주소: ', `${url}/${board_id}`);
+  console.log(`${url}/${board_id}`);
   try {
     const res = await axios.get(`${url}/${board_id}`, 
   );

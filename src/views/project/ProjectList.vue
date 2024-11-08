@@ -133,7 +133,7 @@
       <!--📝프로젝트 글 박스-->
       <template v-if="arr && arr.length > 0">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-10">
-          <div v-for="item in arr" :key="item.id" class=" cursor-pointer border rounded-2xl p-4 relative project-card " @click="viewPage(item.boardId)">
+          <div v-for="item in arr" :key="item.id" class="border rounded-2xl p-4 relative" @click="viewPage(item.boardId)">
             <!-- {{ console.log(item) }} -->
             <div class="top-4 flex items-center justify-between">
               <div class="border px-2 rounded-full mb-2 bg-gray-200 text-gray-800">{{ item.location }}</div>

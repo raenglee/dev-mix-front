@@ -21,13 +21,35 @@ export const loginUsers = async () => {
   }
 };
 
-export const userProfile = async (userProfileData, profileImage) => {
+export const userProfile = async (userProfileData) => {
+  if (localStorage.getItem('token') == null) return;
+  const base64String =userProfileData.profileImage;
+  // 'data:image/png;base64,' 부분을 제거하여 실제 Base64 데이터만 추출
+  const base64Data = base64String.split(',')[1];
+  // Base64 데이터를 디코딩하여 Blob 객체 생성
+  const byteCharacters = atob(base64Data);
+  const byteArrays = [];
+  for (let offset = 0; offset < byteCharacters.length; offset += 1024) {
+    const slice = byteCharacters.slice(offset, offset + 1024);
+    const byteNumbers = new Array(slice.length);
+
+    for (let i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i);
+    }
+
+    const byteArray = new Uint8Array(byteNumbers);
+    byteArrays.push(byteArray);
+  }
+
   try {
     const formData = new FormData(); // FormData를 사용하여 파일과 데이터를 함께 전송
     formData.append('userProfile', new Blob([JSON.stringify(userProfileData)], { type: 'application/json' })); // userProfile 데이터
-    if (profileImage) {
-      formData.append('profileImage', profileImage); // 프로필 이미지가 있을 경우 추가
+    console.log('파일이미지 추가 했음 시작' + userProfileData.profileImage);
+    if (userProfileData.profileImage) {
+      formData.append('profileImage', new File([new Blob(byteArrays, { type: 'image/png' })], 'profile.jpg')); // 프로필 이미지가 있을 경우 추가
+      console.log('파일이미지 진짜 추가 했음');
     }
+    console.log('파일이미지 추가 했음 끝');
 
     const res = await axios.put(`${url}/api/v1/users/profile`, formData, {
       headers: {
@@ -43,7 +65,6 @@ export const userProfile = async (userProfileData, profileImage) => {
     throw err; // 에러를 다시 던져서 호출자에게 전달
   }
 };
-
 
 // // 닉네임 중복 확인
 // export const checkNickname = async (nickname) => {
@@ -62,8 +83,6 @@ export const userProfile = async (userProfileData, profileImage) => {
 //     throw err; // 에러를 다시 던져서 호출자에게 전달
 //   }
 // };
-
-
 
 // 사용자 정보 삭제
 export const deleteUser = async () => {

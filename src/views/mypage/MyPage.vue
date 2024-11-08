@@ -15,32 +15,38 @@
             <RouterLink to="/myprofileedit"><button class="border border-gray-300 rounded-md py-1 px-3 mx-1">프로필 수정</button></RouterLink>
             <button class="border border-gray-300 rounded-md py-1 px-2">공유</button>
           </div>
-          <div class="y-5">
+          <div class="y-5 justify-center text-center">
             <h2 class="font-bold text-xl">소속</h2>
-            <p class="py-2">소속data</p>
+            <div class="py-2">{{ 'useStore.groupName' }}</div>
             <h2 class="font-bold text-xl">포지션</h2>
             <p class="py-2">포지션data</p>
+            <li v-for="user in useStore.data" :key="user.id">
+              {{ data.positionList }}
+            </li>
             <h3 class="font-bold text-xl">지역</h3>
-            <p class="py-2">지역data</p>
+            <div class="py-2">{{ useStore.location }}</div>
             <h2 class="font-bold text-xl">기술 스택</h2>
-            <p class="py-2">기술 스택data</p>
+            <p class="py-2"></p>
+            <li v-for="user in useStore.data" :key="user.id">
+              {{ data.techStackList }}
+            </li>
           </div>
         </div>
-      </div>
-      <!--😀개인 정보 끝-->
-      <!-- 탭 메뉴 -->
-      <div class="flex-1 ml-5 mt-3">
+        <!--😀개인 정보 끝-->
+        <!-- 탭 메뉴 -->
+        <div class="flex-1 ml-5 mt-3">
           <RouterLink to="/mypage/mylikeposts" class="px-4 py-2 mx-2 hover:bg-[#d1000020] hover:font-bold" active-class="font-bold border-b-2 border-[#d10000] bg-[#d1000020]">내 관심 글</RouterLink>
           <RouterLink to="/mypage/mycomments" class="px-4 py-2 mx-2 hover:bg-[#d1000020] hover:font-bold" active-class="font-bold border-b-2 border-[#d10000] bg-[#d1000020]">나의 댓글</RouterLink>
           <!--라우터 뷰를 넣어야 vue안에 있는 내용들을 탭을 눌렀을 때도 보여줌-->
           <RouterView />
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { useUserStore } from '@/store/user';
+import { useUserStore } from '@/store/userStore';
 
 const useStore = useUserStore();
 </script>
