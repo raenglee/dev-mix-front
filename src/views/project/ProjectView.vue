@@ -14,7 +14,6 @@
             <hr class="border-t-4 border-[#d10000]" />
           </div>
         </div>
-
         <div class="justify-between grid grid-cols-9 gap-4 px-10">
           <div class="flex flex-col space-y-10 col-span-3">
             <div class="items-center">
@@ -151,9 +150,7 @@ watchEffect(async () => {
   }
 });
 
-
 // const isAuthor = computed( () = > )
-
 </script>
 
 <style lang="scss" scoped></style>
